@@ -22,6 +22,7 @@ public class Book {
     private String author;
     private String remarks;
     private boolean isBorrowed;
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String body;
 
 

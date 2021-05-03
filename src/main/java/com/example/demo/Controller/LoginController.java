@@ -18,7 +18,7 @@ public class LoginController {
     @Autowired
     UserDao userDao;
 
-    @RequestMapping(value = "userLogin", method = GET)
+    @RequestMapping(value = "userLogin")
     public String Userlogin(@RequestParam(value = "name") String name, @RequestParam(value = "password") String password,
                             HttpServletRequest request) {
         User user = userDao.getUserByUserNameAndPassWord(name, password);
@@ -28,7 +28,9 @@ public class LoginController {
             HttpSession session = request.getSession(true);
             session.setAttribute("User", user);
         }
-        return "UserOptions.html";
+        //如果那么写就不能post，只能get
+        //return "UserOptions.html";
+        return "redirect:/UserOptions.html";
     }
 
     @RequestMapping(value = "AdminLogin", method = GET)
