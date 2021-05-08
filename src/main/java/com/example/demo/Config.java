@@ -1,7 +1,7 @@
 package com.example.demo;
 
-import com.example.demo.Advice.AdminInterceptor;
-import com.example.demo.Advice.LoginInterceptor;
+import com.example.demo.Interceptions.AdminInterceptor;
+import com.example.demo.Interceptions.LoginInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

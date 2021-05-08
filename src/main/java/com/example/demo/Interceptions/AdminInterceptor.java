@@ -1,4 +1,4 @@
-package com.example.demo.Advice;
+package com.example.demo.Interceptions;
 
 import com.example.demo.Dao.UserDao;
 import com.example.demo.Exceptions.NoAdmin;
