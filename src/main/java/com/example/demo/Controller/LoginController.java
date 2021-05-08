@@ -1,6 +1,8 @@
 package com.example.demo.Controller;
 
 import com.example.demo.Dao.UserDao;
+import com.example.demo.Exceptions.CantFindUser;
+import com.example.demo.Exceptions.NoAdmin;
 import com.example.demo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +15,7 @@ import javax.servlet.http.HttpSession;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @Controller
-@RequestMapping
+@RequestMapping("login")
 public class LoginController {
     @Autowired
     UserDao userDao;
@@ -23,7 +25,7 @@ public class LoginController {
                             HttpServletRequest request) {
         User user = userDao.getUserByUserNameAndPassWord(name, password);
         if (user == null)
-            return "redirect:/error/cantFind";
+            throw new CantFindUser();
         else {
             HttpSession session = request.getSession(true);
             session.setAttribute("User", user);
@@ -38,12 +40,14 @@ public class LoginController {
                              HttpServletRequest request) {
         User user = userDao.getUserByUserNameAndPassWord(name, password);
         if (user == null)
-            return "redirect:/error/cantFind";
+            throw new CantFindUser();
+        if (!user.isAdmin())
+            throw new NoAdmin();
         else {
             HttpSession session = request.getSession(true);
             session.setAttribute("User", user);
         }
-        return "AdminOptions.html";
+        return "redirect:/AdminOptions.html";
     }
 
 }

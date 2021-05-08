@@ -43,28 +43,16 @@ public class BookController {
     }
 
 
-    @RequestMapping(value = "AddBookhtml")
-    public String AddBook(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            return generator.getByMessage("您未登录，请前往登录", "loginAdmin.html");
-        }
-        return "AddBook.html";
-    }
-
 
     @ResponseBody
-    @RequestMapping("AddBook")
+    @RequestMapping("/Admin/AddBook")
     public String AddBook(@RequestParam(value = "bookname") String bookname,
                           @RequestParam(value = "author") String author,
                           @RequestParam(value = "remarks") String remarks,
                           @RequestParam(value = "body") String body,
                           HttpServletRequest request) {
 
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            return generator.getByMessage("您未登录，请前往登录", "loginAdmin.html");
-        }
+
         Book book = new Book();
         book.setBookname(bookname);
         book.setAuthor(author);
@@ -79,10 +67,6 @@ public class BookController {
     public String bookDetail(@RequestParam(value = "bookid") String bookid,
                              HttpServletRequest request) {
 
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            return generator.getByMessage("您未登录，请前往登录", "loginAdmin.html");
-        }
 
         return generator.getBookBodyHtml(bookDao.getOne(Long.valueOf(bookid)));
     }
@@ -92,12 +76,10 @@ public class BookController {
     @RequestMapping("borrowBook")
     public String borrowBook(@RequestParam(value = "bookid") Long bookid,
                              HttpServletRequest request) {
-
         HttpSession session = request.getSession(false);
-        if (session == null) {
-            return generator.getByMessage("您未登录，请前往登录", "loginAdmin.html");
-        }
         Book book = bookDao.getOne(bookid);
+        if (book.isBorrowed())
+            return "书籍已经被人借走了！";
         book.setUser((User) session.getAttribute("User"));
         book.setBorrowed(true);
         bookDao.save(book);
@@ -108,12 +90,11 @@ public class BookController {
     @RequestMapping("returnBook")
     public String returnBook(@RequestParam(value = "bookid") Long bookid,
                              HttpServletRequest request) {
-
         HttpSession session = request.getSession(false);
-        if (session == null) {
-            return generator.getByMessage("您未登录，请前往登录", "loginAdmin.html");
-        }
+        User user = (User) session.getAttribute("User");
         Book book = bookDao.getOne(bookid);
+        if (book.getUser().getUserId() != user.getUserId())
+            return "不能归还不是你借的书！";
         book.setUser(null);
         book.setBorrowed(false);
         bookDao.save(book);
@@ -121,14 +102,9 @@ public class BookController {
     }
 
     @ResponseBody
-    @RequestMapping("DeleteBook")
+    @RequestMapping("/Admin/DeleteBook")
     public String DeleteBook(@RequestParam(value = "bookid") Long bookid,
                              HttpServletRequest request) {
-
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            return generator.getByMessage("您未登录，请前往登录", "loginAdmin.html");
-        }
         Book book = bookDao.getOne(bookid);
         bookDao.delete(book);
         return "删除成功!";
