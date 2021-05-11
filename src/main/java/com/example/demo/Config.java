@@ -10,11 +10,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class Config implements WebMvcConfigurer {
+
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
+
         configurer.addPathPrefix("api", c -> true);
     }
-
     @Bean
     AdminInterceptor adminInterceptor() {
         return new AdminInterceptor();
